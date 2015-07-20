@@ -1,7 +1,9 @@
 function printReceipt(inputs) {
   var num = 1;
   var products = [];
+
   for(var i = 0; i < inputs.length; i++) {
+
     if(inputs[i] == inputs[i+1]) {
       num++;
     }
