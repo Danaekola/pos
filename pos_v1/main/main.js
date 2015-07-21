@@ -1,32 +1,102 @@
-function  printReceipt(inputs){
-  var  allItems = loadAllItems();
-  var p,temp,sum = 0,total = 0,num = 1;
-  var str =  '***<没钱赚商店>收据***\n';
-  var str1 = '挥泪赠送商品：\n';
-  for(var i = 0; i < inputs.length; i++) {
-    if( inputs[i].length>10 ){
-	  p = parseInt(inputs[i].substr(11));
-      temp = outPut(inputs[i].substr(0,10),allItems);
-	  str += '名称：'+temp.name +'，数量：'+p+temp.unit+'，单价：'+temp.price.toFixed(2)+'(元)，小计：'+(p*temp.price).toFixed(2)+'(元)'+'\n';
-      total += p*temp.price;
-	  continue;
-	}
-    else if(inputs[i] == inputs[i+1]) {
-          num++;
-    }
-    else{
-        temp = outPut(inputs[i],allItems);
-        str += '名称：'+temp.name+'，数量：'+num+temp.unit+'，单价：'+temp.price.toFixed(2)+'(元)，小计：'+((num-1)*temp.price).toFixed(2)+'(元)'+'\n';
-        total += (num-1)*temp.price;
-        str1 += '名称：'+temp.name+'，数量：'+1+temp.unit+'\n';
-	    sum += temp.price;
-        num = 1;
-	}
-  }
-  str +='----------------------\n'+str1+'----------------------\n'+'总计：'+total.toFixed(2)+'(元)'+'\n'+'节省：'+sum.toFixed(2)+'(元)'+'\n'+'**********************';
-  console.log(str);
+function  printReceipt(barcodes){
+  var cartItems = getCartItems(barcodes);
+  var promotion = getPromotion(cartItems);
+  var receipt ='***<没钱赚商店>收据***\n' +
+      getItemString(cartItems) +
+      '----------------------\n' +
+      '挥泪赠送商品：\n' +
+      promotion.string +
+      '----------------------\n' +
+      '总计：' + formatPrice(getTotalPrice(cartItems) - promotion.reduce) + '(元)\n' +
+      '节省：' + formatPrice(promotion.reduce) + '(元)\n' +
+      '**********************';
+ console.log(receipt);
 }
-function outPut(element,allItems){
+
+function getTotalPrice(cartItems){
+  var totalPrice = 0;
+  cartItems.forEach(function(cartItem){
+  totalPrice += getSubtotal(cartItem.count,cartItem.item.price);
+});
+  return totalPrice;
+}
+
+function getItemString(cartItems){
+  var itemString = '';
+  cartItems.forEach(function(cartItem){
+  itemString += '名称' + '：'+ cartItem.item.name + '，'+
+  '数量' + '：' + cartItem.count +cartItem.item.unit + '，'+
+  '单价' + '：' + formatPrice(cartItem.item.price) + '(元)' + '，' +
+  '小计' + '：' + formatPrice(getSubtotal(cartItem.count-Math.floor(cartItem.count/3),cartItem.item.price))+ '(元)' +'\n';
+});
+  return itemString;
+}
+
+function formatPrice(price) {
+  return price.toFixed(2);
+}
+function getSubtotal(count,price){
+  return count*price;
+}
+function promotionItem(cartItem) {
+  var promotions = loadPromotions();
+  var promotionPrice = 0;
+  var item;
+  var barcodes = promotions[0].barcodes;
+  for (var i = 0; i < barcodes.length; i++) {
+     var barcode = barcodes[i];
+     if (cartItem.item.barcode === barcode && cartItem.count >= 2) {
+       item = cartItem.item;
+       promotionPrice = item.price;
+       break;
+     }
+     }
+  return {price: promotionPrice, item: item};
+}
+function getPromotion(cartItems) {
+  var promotionString = '';
+  var reduce = 0;
+  cartItems.forEach(function (cartItem) {
+    var promotion = promotionItem(cartItem);
+    if (promotion.item) {
+      promotionString +='名称：' + promotion.item.name +
+      '，数量：1' + promotion.item.unit + '\n';
+      reduce += cartItem.item.price;
+    }
+});
+  return {string: promotionString, reduce: reduce};
+}
+function getCartItems(barcodes){
+  var cartItems = [];
+  var item;
+  var  allItems = loadAllItems();
+  barcodes.forEach(function(barcode){
+    if(barcode.length>10){
+		var object=getItem(barcode.substr(0,10),allItems);
+		var count=parseFloat(barcode.substr(11));
+        cartItems.push({item:object,count:count});
+	    return false;
+	}
+	var cartItem = findCartItem(cartItems,barcode);
+    item=getItem(barcode,allItems);
+	if(cartItem){
+      cartItem.count++;
+	}
+	else {
+	  cartItems.push({item:item,count:1});
+	}
+  });
+    return cartItems;
+}
+
+function findCartItem(cartItems,barcode){
+  for(var x=0;x<cartItems.length;x++){
+   if(cartItems[x].item.barcode === barcode)
+   return cartItems[x];
+  }
+}
+
+function getItem(element,allItems){
   for(var x = 0; x < allItems.length; x++)
     if(element == allItems[x].barcode)
 		return allItems[x];

@@ -2,18 +2,19 @@ function printReceipt(inputs) {
   var str = '***<没钱赚商店>收据***'+'\n';
   var temp = 0,number;
   var result = [];
-  for(var x = 0; x < inputs.length; x++){
+  inputs.forEach(function(input){
+     if(0 == ecape(input.barcode,result))
+     return false;
+    number = getCount(input.barcode,inputs);
 
-    if(0 == ecape(inputs[x].barcode,result))
-      continue;
-    number = getCount(inputs[x].barcode,inputs);
-
-    str += '名称：'+inputs[x].name+'，数量：'+number+inputs[x].unit+'，单价：'+inputs[x].price.toFixed(2)+'(元)，小计：'+(number*inputs[x].price).toFixed(2)+'(元)'+'\n';
-    temp += number*inputs[x].price;
-  }
+    str += '名称：'+input.name+'，数量：'+number+input.unit+'，单价：'+input.price.toFixed(2)+'(元)，小计：'+(number*input.price).toFixed(2)+'(元)'+'\n';
+    temp += number*input.price;
+  })
 
   str += '----------------------'+'\n' +'总计：'+temp.toFixed(2)+'(元)'+'\n' +'**********************';
   console.log(str);
+
+  
 }
 
 function getCount(element,inputs){
