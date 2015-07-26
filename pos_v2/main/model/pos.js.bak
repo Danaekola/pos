@@ -25,9 +25,7 @@ Pos.prototype.getSubtotal = function(count,price) {
 
 Pos.prototype.discount = function(cart) {
   var promotion = loadPromotions();
-
   if(promotion[0].type == 'BUY_TWO_GET_ONE_FREE') {
-
 	return this.getDiscountItemString(promotion[0].barcodes,cart);	
   }
 };
@@ -69,7 +67,6 @@ Pos.prototype.getSaveMoney=function(barcodes,cart) {
 	if(barcodes.indexOf(cart[x].barcode) != -1){
 		 total += this.getSubtotal(Math.floor(cart[x].count/3),cart[x].price);
 	}
-  }
 
 
   return total;

@@ -18,7 +18,7 @@
   <script type="text/javascript" src="main/model/cartItems.js"></script>
 <script type="text/javascript" src="main/model/cart.js"></script>
   <script type="text/javascript" src="main/model/count.js"></script>
-<script type="text/javascript" src="main/model/time.js"></script>
+<script type="text/javascript" src="main/model/utitle.js"></script>
 
   <script type="text/javascript" src="test/fixtures.js"></script>
   <script type="text/javascript" src="main/main.js"></script>
