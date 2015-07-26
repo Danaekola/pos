@@ -1,22 +1,29 @@
-function printReceipt(barcodes){
+function  printReceipt(barcodes) {
+  var cart=new Cart();
+  var scanner=new Scanner();
+  var pos=new Pos(scanner,cart);
+  barcodes.forEach(function(barcode){
+    pos.scan(barcode);
+  });
 
-  var items = new CartItem(barcodes);
-  var cartItems=items.getCartItems();
+  var cartItems=cart.cartItems;
 
-  var item=new Cart(cartItems);
-  var cart = item.allCart();
+  var promotion=new Promotion();
+  var discount=promotion.getPromotion(cartItems);
 
-  var pos = new Pos();
+
 
   var time = new Time();
 
-  var receipt = '***<没钱赚商店>收据***\n' +'打印时间：' +
-	 time.timer() + '\n' + '----------------------\n' +
-     pos.getItemString(cart) +'----------------------\n' +
-	  '挥泪赠送商品：\n'+pos.discount(cart)+
-    '----------------------\n' +
-    '总计：' + pos.formatPrice(pos.getTotal(cart)) + '(元)\n' +
-    '节省：' + pos.formatPrice(pos.getSave(cart)) + '(元)\n' +
-    '**********************';
-   console.log(receipt);
+  var receipt ='***<没钱赚商店>收据***\n' +'打印时间：' +
+  time.timer()+ '\n' + '----------------------\n'+
+  pos.getItemString(cartItems) +
+  '----------------------\n' +
+  '挥泪赠送商品：\n' +
+  discount.discountString +
+  '----------------------\n' +
+  '总计：' + Utils.formatPrice(cart.getTotalPrice()) + '(元)\n' +
+  '节省：' + Utils.formatPrice(discount.saveTotal) + '(元)\n' +
+  '**********************';
+  console.log(receipt);
 }
