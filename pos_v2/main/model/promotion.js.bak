@@ -22,7 +22,7 @@ Promotion.prototype.getPromotion=function(cartItems) {
   
   cartItems.forEach(function (cartItem) {
     var promotion = _this.promotionItem(cartItem);
-	  if(promotion) {
+	if(promotion) {
 
       promotionString +='名称：' + promotion.item.name +
       '，数量：' + Math.floor(promotion.count/3)+ promotion.item.unit + '\n';
