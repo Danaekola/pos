@@ -4,8 +4,8 @@ function Pos( scanner,cart){
   this.cart = cart || new Cart();
 }
 
-Pos.prototype.scan = function(barcode) {
-  var cartItem = this.scanner.scan(barcode);
+Pos.prototype.scan = function(tag) {
+  var cartItem = this.scanner.scan(tag);
   this.cart.findCartItems(cartItem);
 };
 

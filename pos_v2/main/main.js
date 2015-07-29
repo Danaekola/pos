@@ -1,9 +1,9 @@
-function  printReceipt(barcodes) {
+function  printReceipt(tags) {
   var cart=new Cart();
   var scanner=new Scanner();
   var pos=new Pos(scanner,cart);
-  barcodes.forEach(function(barcode){
-    pos.scan(barcode);
+  tags.forEach(function(tag){
+    pos.scan(tag);
   });
     
   var cartItems=cart.cartItems;

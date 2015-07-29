@@ -5,9 +5,9 @@ function Cart(cartItems){
 
 Cart.prototype.findCartItems = function(cartItem){
    
-    var Item = this.findCartItem(cartItem);
-	  if(Item){
-	    Item.count += cartItem.count;
+    var _findCartItem = this.findCartItem(cartItem);
+	  if(_findCartItem){
+	    _findCartItem.count += cartItem.count;
 	  }
 	  else{
 
